@@ -19,7 +19,22 @@
           <span v-show="onSale">On Sale!</span>
           <a :href="link">link</a>
         </div>
+
+        <div v-for="variant in variants" :key="variant.variantId">
+          <p @mouseover="updateImage(variant)">{{variant.varianColor}}</p>
+        </div>
+
+        <button @click="addCart">add cart</button>
       </div>
+
+      <!-- Exercise LIST  -->
+      <ul>
+        <li v-for="size in sizes" :key="size.key">{{size.title}}</li>
+      </ul>
+
+      <!-- decrease cart  -->
+      <button @click="decreaseCart">decrease cart</button>
+      <p>cart:{{cart}}</p>
     </div>
     <script src="./node_modules/vue/dist/vue.js"></script>
     <script src="./main.js"></script>
