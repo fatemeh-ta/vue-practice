@@ -2,6 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./main.css" />
     <title>Document</title>
   </head>
   <body>
@@ -10,21 +11,41 @@
         <div class="product-image">
           <img :src="image" :alt="altText" />
         </div>
-
         <div class="product-info">
-          <h1>{{product}}</h1>
+          <h1>{{title}}</h1>
           <p>{{description}}</p>
           <p v-if="inStock">In Stock</p>
-          <p v-else>Out of Stock</p>
+
+          <!--*************** PRACTICE PART 6 ******************* -->
+          <p v-else :class="!inStock ? 'textDec' : ''">Out of Stock</p>
+
+          <!--*************** END OF PRACTICE PART 6 ******************* -->
+
           <span v-show="onSale">On Sale!</span>
           <a :href="link">link</a>
+
+          <!--*************** PRACTICE PART 7 ******************* -->
+          <p>{{onSalePrint}}</p>
+
+          <!--*************** END OF PRACTICE PART 7 ******************* -->
         </div>
 
-        <div v-for="variant in variants" :key="variant.variantId">
-          <p @mouseover="updateImage(variant)">{{variant.varianColor}}</p>
+        <div
+          v-for="(variant,index) in variants"
+          :key="variant.variantId"
+          class="box_color"
+          :style="{backgroundColor : variant.varianColor}"
+          @mouseover="updateImage(index)"
+        >
+          <!-- <p @mouseover="updateImage(variant)">{{variant.varianColor}}</p> -->
         </div>
-
-        <button @click="addCart">add cart</button>
+        <button
+          @click="addCart"
+          :disabled="!inStock"
+          :class="{disable_button : !inStock}"
+        >
+          add cart
+        </button>
       </div>
 
       <!-- Exercise LIST  -->
