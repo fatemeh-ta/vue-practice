@@ -7,55 +7,7 @@
   </head>
   <body>
     <div id="app">
-      <div class="product">
-        <div class="product-image">
-          <img :src="image" :alt="altText" />
-        </div>
-        <div class="product-info">
-          <h1>{{title}}</h1>
-          <p>{{description}}</p>
-          <p v-if="inStock">In Stock</p>
-
-          <!--*************** PRACTICE PART 6 ******************* -->
-          <p v-else :class="!inStock ? 'textDec' : ''">Out of Stock</p>
-
-          <!--*************** END OF PRACTICE PART 6 ******************* -->
-
-          <span v-show="onSale">On Sale!</span>
-          <a :href="link">link</a>
-
-          <!--*************** PRACTICE PART 7 ******************* -->
-          <p>{{onSalePrint}}</p>
-
-          <!--*************** END OF PRACTICE PART 7 ******************* -->
-        </div>
-
-        <div
-          v-for="(variant,index) in variants"
-          :key="variant.variantId"
-          class="box_color"
-          :style="{backgroundColor : variant.varianColor}"
-          @mouseover="updateImage(index)"
-        >
-          <!-- <p @mouseover="updateImage(variant)">{{variant.varianColor}}</p> -->
-        </div>
-        <button
-          @click="addCart"
-          :disabled="!inStock"
-          :class="{disable_button : !inStock}"
-        >
-          add cart
-        </button>
-      </div>
-
-      <!-- Exercise LIST  -->
-      <ul>
-        <li v-for="size in sizes" :key="size.key">{{size.title}}</li>
-      </ul>
-
-      <!-- decrease cart  -->
-      <button @click="decreaseCart">decrease cart</button>
-      <p>cart:{{cart}}</p>
+      <product :premium="premium" />
     </div>
     <script src="./node_modules/vue/dist/vue.js"></script>
     <script src="./main.js"></script>
