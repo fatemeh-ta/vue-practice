@@ -57,7 +57,7 @@ Vue.component("product", {
 
       <!-- decrease cart  -->
       <button @click="decreaseCart">decrease cart</button>
-      <p>cart:{{cart}}</p>
+    
     </div>
   `,
 
@@ -102,7 +102,6 @@ Vue.component("product", {
         { key: 2, title: "large" },
         { key: 3, title: "xLarge" },
       ],
-      cart: 0,
     };
   },
 
@@ -137,7 +136,8 @@ Vue.component("product", {
 
   methods: {
     addCart() {
-      this.cart += 1;
+      // this.cart += 1;
+      this.$emit("add-to-cart", this.variants[this.selectedVariant].variantId);
     },
 
     // updateImage(image) {
@@ -149,11 +149,14 @@ Vue.component("product", {
     },
 
     decreaseCart() {
-      if (this.cart > 0) {
-        this.cart -= 1;
-      } else {
-        this.cart = 0;
-      }
+      this.$emit("down-cart");
+      // if (this.cart > 0) {
+      //   this.cart -= 1;
+      //   this.$emit("addCart");
+      // } else {
+      //   this.cart = 0;
+      //   this.$emit("");
+      // }
     },
   },
 });
@@ -177,5 +180,24 @@ new Vue({
   el: "#app",
   data: {
     premium: true,
+    cart: [],
+  },
+
+  methods: {
+    updateCart(id) {
+      // this.cart += 1;
+      this.cart.push(id);
+    },
+
+    decreaseCart() {
+      // if (this.cart > 0) {
+      //   this.cart -= 1;
+      // } else {
+      //   this.cart = 0;
+      // }
+      if (this.cart.length > 0) {
+        this.cart = [];
+      }
+    },
   },
 });

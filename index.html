@@ -7,7 +7,13 @@
   </head>
   <body>
     <div id="app">
-      <product :premium="premium" />
+      <!-- <p>cart:{{cart.length}}</p> -->
+      <p>cart:{{cart.length}}</p>
+      <product
+        :premium="premium"
+        @add-to-cart="updateCart"
+        @down-cart="decreaseCart"
+      />
     </div>
     <script src="./node_modules/vue/dist/vue.js"></script>
     <script src="./main.js"></script>
