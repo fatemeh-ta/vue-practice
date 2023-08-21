@@ -50,6 +50,23 @@ Vue.component("product", {
         </button>
       </div>
 
+      <!-- FORM & MODAL  -->
+      <div>
+        <h2>Reviews</h2>
+        <p v-if="!reviews.length">There are no reviews yet.</p>
+        <ul>
+          <li v-for="(review,index) in reviews" :key="index" >
+            <p>{{review.name}}</p>
+            <p> Rating: {{review.rating}}</p>
+            <p>Review: {{review.review}}</p>
+            <p>Result: {{review.result}}</p>
+          </li>
+        </ul>
+      </div>
+
+
+      <product-view @review-submitted="addReview"/>
+
       <!-- Exercise LIST  -->
       <ul>
         <li v-for="size in sizes" :key="size.key">{{size.title}}</li>
@@ -102,6 +119,7 @@ Vue.component("product", {
         { key: 2, title: "large" },
         { key: 3, title: "xLarge" },
       ],
+      reviews: [],
     };
   },
 
@@ -158,6 +176,10 @@ Vue.component("product", {
       //   this.$emit("");
       // }
     },
+
+    addReview(props) {
+      this.reviews.push(props);
+    },
   },
 });
 
@@ -172,6 +194,96 @@ Vue.component("product-details", {
     details: {
       type: Array,
       required: true,
+    },
+  },
+});
+
+Vue.component("product-view", {
+  template: `
+    <form class="review-form" @submit.prevent="onSubmit">
+
+      <p v-if="errors.length">
+        <b>Please correct the following error(s):</b>
+        <ul>
+          <li v-for="error in errors">{{ error }}</li>
+        </ul>
+      </p>
+
+
+      <p>
+        <label for="name">Name:</label>
+        <input id="name" v-model="name" placeholder="name">
+      </p>
+      
+      <p>
+        <label for="review">Review:</label>      
+        <textarea id="review" v-model="review"></textarea>
+      </p>
+      
+      <p>
+        <label for="rating">Rating:</label>
+        <select id="rating" v-model.number="rating">
+          <option>5</option>
+          <option>4</option>
+          <option>3</option>
+          <option>2</option>
+          <option>1</option>
+        </select>
+      </p>
+
+      <p>
+        <h5>Would you recommend this product ?</h5>
+         <input type="radio" id="agree" value="yes" name="product" v-model="result">
+         <label for="agree">Yes</label>
+         <input type="radio" id="disagree" value="no" name="product" v-model="result">
+         <label for="disagree">No</label>
+      </p>
+        
+      <p>
+        <input type="submit" value="Submit">  
+      </p>    
+
+    </form>
+  `,
+  data() {
+    return {
+      name: null,
+      review: null,
+      rating: null,
+      errors: [],
+      result: null,
+    };
+  },
+
+  methods: {
+    onSubmit() {
+      this.errors = [];
+      if (this.name && this.review && this.rating && this.result) {
+        let productReview = {
+          name: this.name,
+          review: this.review,
+          rating: this.rating,
+          result: this.result,
+        };
+        this.$emit("review-submitted", productReview);
+        this.name = "";
+        this.review = "";
+        this.rating = "";
+        this.result = "";
+      } else {
+        if (!this.name) {
+          this.errors.push("please enter name");
+        }
+        if (!this.review) {
+          this.errors.push("please enter review");
+        }
+        if (!this.rating) {
+          this.errors.push("please enter rate");
+        }
+        if (!this.result) {
+          this.errors.push("please enter result");
+        }
+      }
     },
   },
 });
