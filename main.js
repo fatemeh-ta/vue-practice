@@ -1,3 +1,5 @@
+var eventBus = new Vue();
+
 Vue.component("product", {
   template: `
     <div>
@@ -13,7 +15,7 @@ Vue.component("product", {
           <!--*************** PRACTICE PART 6 ******************* -->
           <p v-else :class="!inStock ? 'textDec' : ''">Out of Stock</p>
 
-          <p> shipping: {{ shipping }}</p>
+          
 
           <!--*************** END OF PRACTICE PART 6 ******************* -->
 
@@ -29,7 +31,7 @@ Vue.component("product", {
         </div>
 
         <!--*************** PRACTICE PART 8 ******************* -->
-        <product-details :details="details" />
+        
         <!--*************** END OF PRACTICE PART 8 ******************* -->
 
         <div
@@ -50,22 +52,11 @@ Vue.component("product", {
         </button>
       </div>
 
-      <!-- FORM & MODAL  -->
-      <div>
-        <h2>Reviews</h2>
-        <p v-if="!reviews.length">There are no reviews yet.</p>
-        <ul>
-          <li v-for="(review,index) in reviews" :key="index" >
-            <p>{{review.name}}</p>
-            <p> Rating: {{review.rating}}</p>
-            <p>Review: {{review.review}}</p>
-            <p>Result: {{review.result}}</p>
-          </li>
-        </ul>
-      </div>
+      <!--TAB  -->
 
+      <product-tabs :reviews="reviews" />
 
-      <product-view @review-submitted="addReview"/>
+      <product-tabs-shopping :shipping="shipping" :details="details"/>
 
       <!-- Exercise LIST  -->
       <ul>
@@ -177,9 +168,15 @@ Vue.component("product", {
       // }
     },
 
-    addReview(props) {
-      this.reviews.push(props);
-    },
+    // addReview(props) {
+    //   this.reviews.push(props);
+    // },
+  },
+
+  mounted() {
+    eventBus.$on("review-submitted", (productReview) => {
+      this.reviews.push(productReview);
+    });
   },
 });
 
@@ -265,7 +262,7 @@ Vue.component("product-view", {
           rating: this.rating,
           result: this.result,
         };
-        this.$emit("review-submitted", productReview);
+        eventBus.$emit("review-submitted", productReview);
         this.name = "";
         this.review = "";
         this.rating = "";
@@ -284,6 +281,92 @@ Vue.component("product-view", {
           this.errors.push("please enter result");
         }
       }
+    },
+  },
+});
+
+Vue.component("product-tabs", {
+  template: `
+    <div>
+      <div class="tab">
+        <span v-for="(tab,index) in tabs" :key="index" @click="selectedTab(tab)" :class="selectedValue === tab ? 'activeTab' : ''">{{ tab }}</span>
+      </div>
+
+      <!-- FORM & MODAL  -->
+      <div v-show="selectedValue === 'Reviews'">
+        <h2>Reviews</h2>
+        <p v-if="!reviews.length">There are no reviews yet.</p>
+        <ul v-else>
+          <li v-for="(review,index) in reviews" :key="index" >
+            <p>{{review.name}}</p>
+            <p> Rating: {{review.rating}}</p>
+            <p>Review: {{review.review}}</p>
+            <p>Result: {{review.result}}</p>
+          </li>
+        </ul>
+      </div>
+      <product-view  v-show="selectedValue === 'Make a Review'"/>
+    
+    </div>
+
+
+  `,
+
+  props: {
+    reviews: {
+      type: Array,
+      default: () => {},
+    },
+  },
+
+  data() {
+    return {
+      tabs: ["Reviews", "Make a Review"],
+      selectedValue: "Reviews",
+    };
+  },
+
+  methods: {
+    selectedTab(value) {
+      this.selectedValue = value;
+    },
+  },
+});
+
+Vue.component("product-tabs-shopping", {
+  props: {
+    shipping: {
+      type: String,
+      required: true,
+    },
+
+    details: {
+      type: Array,
+      required: true,
+    },
+  },
+  template: `
+    <div>
+
+      <div class="tab">
+        <span v-for="(tab,index) in tabs" :key="index" @click="showModal(tab)" :class="selectedValue === tab ? 'activeTab' : ''">{{ tab }}</span>
+      </div>
+      <p v-show='selectedValue === "shopping"'> shipping: {{ shipping }}</p>
+      <product-details v-show="selectedValue === 'detail'" :details="details" />
+    
+    </div>
+  `,
+
+  data() {
+    return {
+      tabs: ["shopping", "detail"],
+      selectedValue: "shopping",
+    };
+  },
+
+  methods: {
+    showModal(val) {
+      this.selectedValue = val;
     },
   },
 });

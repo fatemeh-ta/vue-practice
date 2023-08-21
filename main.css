@@ -11,3 +11,17 @@
 .textDec {
   text-decoration: line-through;
 }
+
+.tab {
+  border: 1px solid #000;
+  padding: 16px;
+}
+
+.tab span {
+  padding-right: 16px;
+}
+
+.activeTab {
+  color: green;
+  border-bottom: 1px solid #022e02;
+}
